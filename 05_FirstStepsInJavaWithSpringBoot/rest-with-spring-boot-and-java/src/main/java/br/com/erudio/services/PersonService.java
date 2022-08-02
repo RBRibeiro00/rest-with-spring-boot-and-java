@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.erudio.data.vo.v1.PersonVO;
+import br.com.erudio.data.vo.v2.PersonVOV2;
 import br.com.erudio.exceptions.ResourceNotFoundException;
 import br.com.erudio.mapper.DozerMapper;
+import br.com.erudio.mapper.custom.PersonMapper;
 import br.com.erudio.model.Person;
 import br.com.erudio.repository.PersonRepository;
 
@@ -20,6 +22,9 @@ public class PersonService {
 	@Autowired
 	PersonRepository personRepository;
 
+	@Autowired
+	PersonMapper personMapper;
+
 	public List<PersonVO> findAll() {
 		return DozerMapper.parseListObjects(personRepository.findAll(), PersonVO.class);
 	}
@@ -27,10 +32,8 @@ public class PersonService {
 	public PersonVO findById(Long id) {
 
 		logger.info("Finding one person!");
-
 		var entity = personRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
-
 		return DozerMapper.parseObject(entity, PersonVO.class);
 	}
 
@@ -39,6 +42,13 @@ public class PersonService {
 		logger.info("Creating one person!");
 		var entity = DozerMapper.parseObject(person, Person.class);
 		var vo = DozerMapper.parseObject(personRepository.save(entity), PersonVO.class);
+		return vo;
+	}
+
+	public PersonVOV2 createV2(PersonVOV2 person) {
+		logger.info("Creating one person with V2!");
+		var entity = personMapper.convertVoToEntity(person);
+		var vo = personMapper.convertEntityToVo(personRepository.save(entity));
 		return vo;
 	}
 
@@ -52,17 +62,16 @@ public class PersonService {
 		entity.setLastName(person.getLastName());
 		entity.setAddress(person.getAddress());
 		entity.setGender(person.getGender());
-
 		var vo = DozerMapper.parseObject(personRepository.save(entity), PersonVO.class);
 		return vo;
 	}
 
 	public void delete(Long id) {
-		logger.info("Deleting one person!");
 
+		logger.info("Deleting one person!");
 		var entity = personRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
-
 		personRepository.delete(entity);
 	}
+
 }

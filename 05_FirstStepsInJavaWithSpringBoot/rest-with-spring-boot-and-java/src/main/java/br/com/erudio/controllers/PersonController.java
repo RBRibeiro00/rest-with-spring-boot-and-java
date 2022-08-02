@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.erudio.data.vo.v1.PersonVO;
+import br.com.erudio.data.vo.v2.PersonVOV2;
 import br.com.erudio.services.PersonService;
 
 @RestController
@@ -34,13 +35,18 @@ public class PersonController {
 	}
 
 	@PostMapping
-	public PersonVO create(@RequestBody PersonVO PersonVO) throws Exception {
-		return personService.create(PersonVO);
+	public PersonVO create(@RequestBody PersonVO person) throws Exception {
+		return personService.create(person);
+	}
+
+	@PostMapping(value = "/v2")
+	public PersonVOV2 createV2(@RequestBody PersonVOV2 person) throws Exception {
+		return personService.createV2(person);
 	}
 	
 	@PutMapping(value = "/{id}")
-	public PersonVO update(@RequestBody PersonVO PersonVO) throws Exception {
-		return personService.update(PersonVO);
+	public PersonVO update(@RequestBody PersonVO person) throws Exception {
+		return personService.update(person);
 	}
 	
 	@DeleteMapping(value = "/{id}")
