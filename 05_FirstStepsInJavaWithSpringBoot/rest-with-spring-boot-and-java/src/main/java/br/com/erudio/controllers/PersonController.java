@@ -43,12 +43,12 @@ public class PersonController {
 	public PersonVOV2 createV2(@RequestBody PersonVOV2 person) throws Exception {
 		return personService.createV2(person);
 	}
-	
-	@PutMapping(value = "/{id}")
+
+	@PutMapping
 	public PersonVO update(@RequestBody PersonVO person) throws Exception {
 		return personService.update(person);
 	}
-	
+
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) throws Exception {
 		personService.delete(id);
