@@ -4,13 +4,18 @@ package br.com.erudio.services;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import br.com.erudio.controllers.BookController;
+import br.com.erudio.controllers.PersonController;
 import br.com.erudio.data.vo.v1.BookVO;
 import br.com.erudio.exceptions.RequiredObjectIsNullException;
 import br.com.erudio.exceptions.ResourceNotFoundException;
@@ -25,20 +30,20 @@ public class BookService {
 
 	@Autowired
 	BookRepository bookRepository;
+	
+	@Autowired
+	PagedResourcesAssembler<BookVO> assembler;
 
-	public List<BookVO> findAll() {
-		logger.info("Finding all book!");
+	public PagedModel<EntityModel<BookVO>> findAll(Pageable pageable) {
+		logger.info("Finding all books!");
 		
-		var books = DozerMapper.parseListObjects(bookRepository.findAll(), BookVO.class);
-		books.stream().forEach(
-				book -> {
-					try {
-						book.add(linkTo(methodOn(BookController.class).findById(book.getKey())).withSelfRel());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				});
-		return books;
+		var bookPage = bookRepository.findAll(pageable);
+		
+		var bookVosPage = bookPage.map(p -> DozerMapper.parseObject(p, BookVO.class));
+		bookVosPage.map(p -> p.add(linkTo(methodOn(PersonController.class).findById(p.getKey())).withSelfRel()));
+		
+		Link link = linkTo(methodOn(PersonController.class).findAllPeople(pageable.getPageNumber(), pageable.getPageSize(), "asc")).withSelfRel();
+		return assembler.toModel(bookVosPage, link);
 	}
 
 	public BookVO findById(Long id) throws Exception {
