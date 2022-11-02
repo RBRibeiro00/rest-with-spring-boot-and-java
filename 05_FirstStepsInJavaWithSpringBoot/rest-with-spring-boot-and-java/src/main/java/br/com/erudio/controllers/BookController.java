@@ -76,7 +76,7 @@ public class BookController {
 			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
 	}
 )
-	public BookVO findById(@PathVariable(value = "id") Long id) throws Exception {
+	public BookVO findById(@PathVariable(value = "id") Long id) {
 		return bookService.findById(id);
 	}
 
@@ -91,12 +91,12 @@ public class BookController {
 			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
 	}
 )
-	public BookVO create(@RequestBody BookVO book) throws Exception {
+	public BookVO create(@RequestBody BookVO book) {
 		return bookService.create(book);
 	}
 
 //	@PostMapping(value = "/v2")
-//	public BookVOV2 createV2(@RequestBody BookVOV2 book) throws Exception {
+//	public BookVOV2 createV2(@RequestBody BookVOV2 book) {
 //		return bookService.createV2(book);
 //	}
 
@@ -112,7 +112,7 @@ public class BookController {
 			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
 	}
 )
-	public BookVO update(@RequestBody BookVO book) throws Exception {
+	public BookVO update(@RequestBody BookVO book) {
 		return bookService.update(book);
 	}
 
@@ -127,7 +127,7 @@ public class BookController {
 			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
 	}
 )
-	public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) throws Exception {
+	public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
 		bookService.delete(id);
 		return ResponseEntity.noContent().build();
 	}

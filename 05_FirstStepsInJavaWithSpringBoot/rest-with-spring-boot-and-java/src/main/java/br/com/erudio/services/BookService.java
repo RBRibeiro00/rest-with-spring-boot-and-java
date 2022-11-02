@@ -46,7 +46,7 @@ public class BookService {
 		return assembler.toModel(bookVosPage, link);
 	}
 
-	public BookVO findById(Long id) throws Exception {
+	public BookVO findById(Long id) {
 
 		logger.info("Finding one book!");
 		var entity = bookRepository.findById(id)
@@ -56,7 +56,7 @@ public class BookService {
 		return vo;
 	}
 
-	public BookVO create(BookVO book) throws Exception {
+	public BookVO create(BookVO book) {
 
 		if(book == null) throw new RequiredObjectIsNullException();
 		logger.info("Creating one book!");
@@ -73,7 +73,7 @@ public class BookService {
 //		return vo;
 //	}
 
-	public BookVO update(BookVO book) throws Exception {
+	public BookVO update(BookVO book) {
 
 		if(book == null) throw new RequiredObjectIsNullException();
 		logger.info("Updating one book!");
